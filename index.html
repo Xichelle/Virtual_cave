@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Cave</title>
+  <style>
+    body {
+      font-family:'Courier New', Courier, monospace;
+      background-color: #21221f;
+      color: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+    input {
+      font-family:'Courier New', Courier, monospace;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      background-color: #d1d1d1;
+    }
+    button {
+      font-family:'Courier New', Courier, monospace;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      background-color: rgb(68, 72, 61);
+      color:#f5f5f5;
+
+      
+    }
+    #result {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h1>You've entered the Virtual Cave</h1>
+<p>There are hundreds of pathes in this place, it looks much larger than thought after you enter this place</p>
+<p>You are already here, Try entering a branch number to go deeper:</p>
+<input type="text" id="branchInput" placeholder="Enter branch number">
+<button onclick="exploreBranch()">Explore</button>
+
+<div id="result"></div>
+
+<h2>Leave a Note</h2>
+<p>Feeling tired? Ahh... try to leave a message, maybe someone would notice this</p>
+<p>You really believe me? </p>
+<p>To be honest, the cave won't remember this at all. Everything just vanishes when you truly leave this cave like dust.</p>
+<p>Enter a message after choosing a branch:</p>
+<input type="text" id="noteInput" placeholder="Enter your note">
+<button onclick="leaveNote()">Leave a Note</button>
+
+<script>
+  async function exploreBranch() {
+    const branch = document.getElementById('branchInput').value;
+    const resultDiv = document.getElementById('result');
+    try {
+      const response = await fetch(`http://localhost:3001/branches?branch=${branch}`);
+      const data = await response.json();
+      resultDiv.textContent = `Branch: ${data.branch}\nDescription: ${data.description}`;
+    } catch (error) {
+      resultDiv.textContent = 'Error exploring the branch. Please try again.';
+    }
+  }
+
+  async function leaveNote() {
+    const branch = document.getElementById('branchInput').value;
+    const note = document.getElementById('noteInput').value;
+    const resultDiv = document.getElementById('result');
+    try {
+      const response = await fetch(`http://localhost:3001/branches/${branch}/leave-a-note/${note}`);
+      const message = await response.text();
+      resultDiv.textContent = message;
+    } catch (error) {
+      resultDiv.textContent = 'Error leaving a note. Please try again.';
+    }
+  }
+</script>
+
+</body>
+</html>
